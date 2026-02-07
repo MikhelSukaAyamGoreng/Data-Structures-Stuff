@@ -7,23 +7,36 @@ typedef struct student {
     struct student *previous;
 }student;
 
+student std;
 
-student *addNew(int score, char name[]) {
-    student *new = malloc (10 * sizeof(int) + 100 * sizeof(char));
+void AddNew() {
+    
 }
 
-int main() {
-    student head, tail;
-    
-    head.score = NULL;
-    tail.score = NULL;
 
+// Main Menu
+int main() {
     int x;
+    printf("Choose menu: \n");
+    printf("1. Add new to List\n");
+    printf("2. Print List\n");
+    printf("3. Search List\n");
+
+    printf("Give the number of the menu you want to acces: ");
     scanf("%d", &x);
 
-    for (int i = 0; i < x; i++) {
-        scanf("%d", )
+    if (x == 1) {
+
     }
-    
+    else if (x == 2) {
+
+    }
+    else if (x == 3) {
+
+    }
+    else {
+        printf("Plese choose the available menu \n");
+    }
+
     return 0;
 }
