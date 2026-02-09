@@ -9,6 +9,23 @@ typedef struct student {
 
 student std;
 
+void search(student std *head, int target) {
+    int i = 0;
+    student *current = &head;
+    
+    while (current != NULL) {
+        if ( current->score == target) {
+            i++;
+            return i;
+        }
+        else {
+            
+        }
+    }
+    
+    return -1;
+}
+
 void AddNew() {
     
 }
@@ -21,6 +38,7 @@ int main() {
     printf("1. Add new to List\n");
     printf("2. Print List\n");
     printf("3. Search List\n");
+    printf("4. Remove a list \n");
 
     printf("Give the number of the menu you want to acces: ");
     scanf("%d", &x);
