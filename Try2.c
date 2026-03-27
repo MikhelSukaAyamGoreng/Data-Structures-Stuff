@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<string.h>
 
 typedef struct student {
     int score;
@@ -9,27 +10,72 @@ typedef struct student {
 
 student std;
 
-void search(student std *head, int target) {
-    int i = 0;
-    student *current = &head;
-    
+// The Efficient Way
+struct student *reverse(struct Node *head) {
+    struct student *prev = NULL;
+    struct student *after = NULL;
+    struct student *current = head;
+
     while (current != NULL) {
-        if ( current->score == target) {
-            i++;
-            return i;
-        }
-        else {
-            
-        }
+        after = current->next;
+        current->next = prev;
+        prev = current;
+        current = after;
     }
-    
-    return -1;
+
+    return prev;
 }
 
-void AddNew() {
+// Insertion #middle
+struct student *insertionMid (struct student **headRef, int val, char nem[]) {
+    struct student *NewNode = (struct student *)malloc(sizeof(struct student));
+    NewNode->score = val;
+    strcpy(NewNode->name, nem);
     
+    NewNode->next = (*headRef);
+    (*headRef) = NewNode;
 }
 
+// Insertion #End
+struct student *insertion (struct student *head, int val, char nem[]) {
+    struct student *NewNode = (struct student *)malloc(sizeof(struct student)); 
+    NewNode->score = val;
+    strcpy(NewNode->name, nem);
+    NewNode->next = NULL;
+    
+    
+    struct student *current = head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+
+    current->next = NewNode;
+    return NewNode;
+}
+
+// Deletion
+struct student *deletion (struct student *head, char nem[]) {
+    if (head != NULL && strcmp(head->name, nem) == 0) {
+        struct student *temp = head;
+        head->next = head;
+        free(temp);
+        return head;
+    }
+
+    struct student *current = head;
+
+    while (current != NULL && current->next != NULL) {
+        if (strcmp(nem, current->next->name) == 0) {
+            struct student *temp = current->next;
+            current->next = current->next->next;
+            free(temp);
+            return head;
+        }   
+        current = current->next;
+    }
+
+    return head;
+}
 
 // Main Menu
 int main() {
