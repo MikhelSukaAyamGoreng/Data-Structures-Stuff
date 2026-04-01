@@ -52,10 +52,33 @@ void push(node **head, node **tail, int targetVal, char targetName[]) {
             curr = curr->next;
             New->next = curr;
             curr->prev = New;
+            if (curr->next == NULL) {
+                *tail = New;
+            }
             return;
         }
     }
     return;
+}
+
+void del(char targetName[], node **head, node **tail) {
+    node *curr = *head;
+    if (strcmp(curr->name, targetName) == 0) {
+        node *temp = *head;
+        *head = (*head)->next;
+        (*head)->prev = NULL;
+        free(temp);
+    }
+    else {
+        while (curr->next != NULL && strcmp(curr->name, targetName) != 0) {
+            curr = curr->next;
+        }
+        
+        
+            curr = curr->prev;
+            *tail = curr;
+        
+    }
 }
 
 int main() {
@@ -65,8 +88,19 @@ int main() {
     for (int i = 0; i < x; i++) {
         int score; char name[1000];
         scanf("%d %[^/n]", &score, name);
+        push(&head, &tail, score, name);
     }
 
-    
+    scanf("%d", &x);
+    for (int i = 0; i < x; i++) {
+        char target[100];
+        del(target, &head, &tail);
+    }
+
+    node *curr = *head;
+    while (curr != NULL) {
+        printf("%s %d", curr->name, curr->val);
+        curr = curr->next;
+    }
     return 0;
 }
