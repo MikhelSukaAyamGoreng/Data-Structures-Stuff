@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 void push(node **head, node **tail, int target_val, int where) {
     node *newNode = create(target_val);
     if (*head == NULL) {
@@ -39,7 +43,7 @@ void del(node **head, node **tail, int target_value) {
     else if ((*head)->val == target_value) {
         node *temp = *head;
         *head = (*head)->next;
-        if (*head != NULL)
+        if (*head != NULL)  
             (*head)->prev = NULL;
         else
             *tail = NULL;
@@ -59,10 +63,12 @@ void del(node **head, node **tail, int target_value) {
             curr = curr->next;
         }
         if (curr->next == NULL) return; // not found
-        node *temp = curr->next;
-        curr->next = temp->next;
-        temp->next->prev = curr;        // Bug 5 fixed
-        free(temp);
-        return;
+        else {
+            node *temp = curr->next;
+            curr->next = temp->next;
+            temp->next->prev = curr;        // Bug 5 fixed
+            free(temp);
+            return;
+        }
     }
 }
