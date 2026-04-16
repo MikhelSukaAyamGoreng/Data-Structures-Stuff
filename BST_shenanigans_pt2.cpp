@@ -30,4 +30,48 @@ void *insert(node **root, int target_val) {
     }
 }
 
-void *del(node **root, int t)
+void del(node **root, int target_val) {
+    if (*root == NULL) return;
+    
+    node *temp = *root;
+    if ((*root)->val > target_val) {
+        del((&(*root)->left), target_val);
+    }
+    else if ((*root)->val < target_val) {
+        del((&(*root)->right), target_val);
+    }
+    else {
+        if ((*root)->left == NULL && (*root)->right == NULL) {
+            *root = NULL;
+            free(temp);
+            return;
+        }
+        else if((*root)->left == NULL) {
+            *root = (*root)->right;
+            free(temp);
+            return;
+        }
+        else if((*root)->right == NULL) {
+            *root = (*root)->left;
+            free(temp);
+            return;
+        }
+        else {
+            temp = (*root)->right;
+            while (temp->left != NULL) {
+                temp = temp->left;
+            }
+            (*root)->val = temp->val;
+            del((&(*root)->right), target_val);
+            return;
+        }
+    }
+}
+
+int main() {
+    int x; scanf("%d", &x);
+    for (int i = 0; i < x; i++) {
+        int target_val; scanf("%d", &target_val);
+        insert (&root, target_val);
+    }
+}
