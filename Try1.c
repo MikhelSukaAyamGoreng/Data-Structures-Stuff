@@ -1,86 +1,60 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define max 100
-
-typedef struct node{
+typedef struct node {
     int val;
-    int key;
-    struct node *next;
+    node *next;
 }node;
 
-typedef struct hashtable {
-    node **table;
-}hashtable;
+typedef struct queu {
+    node *front;
+    node *rear;
+} queu;
 
-hashtable *initialize() {
-    hashtable *newNode = (hashtable*)malloc(sizeof(hashtable));
-    newNode->table = (node**)malloc(sizeof(node*) * max);
-
-    for (int i = 0; i < max; i++) {
-        newNode->table[i] = NULL;
-    }
-    return newNode;
-}
-
-int hash(int target) {
-    return target % max;
-}
-
-node *createnode(int target, int target_key) {
+node *create(int target){
     node *newNode = (node*)malloc(sizeof(node));
     newNode->val = target;
-    newNode->key = target_key;
     newNode->next = NULL;
     return newNode;
 }
 
-void hash_table(hashtable *ht, int target_val) {
-    unsigned int target_key = hash(target_val);
-
-    node *point = ht->table[target_key];
-    node *newNode = createnode(target_val, target_key);
-    node *prev = NULL;
-
-    while (point != NULL) {
-        if (point->val == target_val) {
-            return;
-        }
-        prev = point;
-        point = point->next;
-    }
-
-    if (prev == NULL) {
-        prev = newNode;
+void insert(queu *qt, int target) {
+    node *newNode = create(target);
+    if (qt->front == NULL) {
+        qt->front = qt->rear = newNode;
+        return;
     }
     else {
-        prev = point->next;
+        qt->rear = newNode;
+        return;
     }
 }
 
-int search(hashtable *ht, int target) {
-    unsigned int target_key = hash(target);
-    node *point = ht->table[target_key];
-
-    if (point == NULL) {
-        return NULL;
+void del(queu *qt, int target) {
+    if (qt == NULL) return;
+    else {
+        node *temp = qt->front;
+        int target_val = temp->val;
+        qt->front = qt->front->next;
+        qt->front->val = target_val;
+        free(temp);
+        return;
     }
-
-    while (point != NULL) {
-        if (point == target) {
-            return point->key;
-        }
-        point = point->next;
-    }
-    return -1;
 }
 
-int main() {
-    hashtable *ht = initialize();
+void insert(node **head, int target) {
+    node *newNode = create(target);
+    newNode->next = *head;
+    *head = newNode;
+    return;
+}
 
-    int x; scanf("%d", &x);
-    for (int i = 0; i < x; i++) {
-        int target_val; scanf("%d", &target_val);
-        insert(target_val);
+void del (node **head, int target) {
+    if (*head == NULL) return;
+    else {
+        node *temp = *head;
+        *head = (*head)->next;
+        free(temp);
+        return;
     }
 }
