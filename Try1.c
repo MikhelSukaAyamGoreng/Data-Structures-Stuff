@@ -3,58 +3,58 @@
 
 typedef struct node {
     int val;
-    node *next;
+    struct node *left;
+    struct node *right;
 }node;
 
-typedef struct queu {
-    node *front;
-    node *rear;
-} queu;
+node *root = NULL;
 
-node *create(int target){
-    node *newNode = (node*)malloc(sizeof(node));
+node *create(int target) {
+    node *newNode = (node *)malloc(sizeof(node));
+    newNode->left = NULL;
+    newNode->right = NULL;
     newNode->val = target;
-    newNode->next = NULL;
     return newNode;
 }
 
-void insert(queu *qt, int target) {
+void insert(node **root, int target) {
     node *newNode = create(target);
-    if (qt->front == NULL) {
-        qt->front = qt->rear = newNode;
-        return;
-    }
-    else {
-        qt->rear = newNode;
-        return;
-    }
+    if (*root == NULL) *root = newNode;
+    else if ((*root)->val > target) { insert(&(*root)->left, target); }
+    else if ((*root)->val < target) { insert(&(*root)->right, target); }
 }
 
-void del(queu *qt, int target) {
-    if (qt == NULL) return;
-    else {
-        node *temp = qt->front;
-        int target_val = temp->val;
-        qt->front = qt->front->next;
-        qt->front->val = target_val;
-        free(temp);
-        return;
+void del(node **root, int target) {
+    if (*root == NULL)return;
+    node *temp = *root;
+    if ((*root)->val < target) {
+        del(&(*root)->right, target);
     }
-}
-
-void insert(node **head, int target) {
-    node *newNode = create(target);
-    newNode->next = *head;
-    *head = newNode;
-    return;
-}
-
-void del (node **head, int target) {
-    if (*head == NULL) return;
+    else if ((*root)->val > target) {
+        del(&(*root)->left, target);
+    }
     else {
-        node *temp = *head;
-        *head = (*head)->next;
-        free(temp);
-        return;
+        if((*root)->left == NULL && (*root)->right == NULL) {
+            free(temp);
+            return;
+        }
+        else if((*root)->left == NULL) {
+            *root = (*root)->right;
+            free(temp);
+            return;
+        }
+        else if((*root)->right = NULL) {
+            *root = (*root)->left;
+            free(temp);
+            return;
+        }
+        else {
+            temp = (*root)->right;
+            while (temp->left != NULL) {
+                temp = temp->left;
+            }
+            (*root)->val = temp->val;
+            del(&(*root)->right, temp->val);
+        }
     }
 }
