@@ -1,105 +1,86 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct node {
+#define max 100
+
+typedef struct node{
     int val;
-    struct node *left;
-    struct node *right;
+    int key;
+    struct node *next;
 }node;
 
-node *root = NULL;
+typedef struct hashtable {
+    node **table;
+}hashtable;
 
-node *create(int target_val) {
-    node *newNode = (node*)malloc(sizeof(node));
-    newNode->val = target_val;
-    newNode->left = NULL;
-    newNode->right = NULL;
+hashtable *initialize() {
+    hashtable *newNode = (hashtable*)malloc(sizeof(hashtable));
+    newNode->table = (node**)malloc(sizeof(node*) * max);
+
+    for (int i = 0; i < max; i++) {
+        newNode->table[i] = NULL;
+    }
     return newNode;
 }
 
-void insert(node **root, int target_val) {
-    node *newNode = create(target_val);
-    if (*root == NULL) {
-        *root = newNode;
-        return;
-    }
-    else if ((*root)->val < target_val) {
-        insert(&(*root)->right, target_val);
-    }
-    else if ((*root)->val > target_val) {
-        insert(&(*root)->left, target_val);
-    }
+int hash(int target) {
+    return target % max;
 }
 
-void del(node **root, int target) {
-    if (*root == NULL) return;
+node *createnode(int target, int target_key) {
+    node *newNode = (node*)malloc(sizeof(node));
+    newNode->val = target;
+    newNode->key = target_key;
+    newNode->next = NULL;
+    return newNode;
+}
 
-    if ((*root)->val > target) {
-        del(&(*root)->left, target);
+void hash_table(hashtable *ht, int target_val) {
+    unsigned int target_key = hash(target_val);
+
+    node *point = ht->table[target_key];
+    node *newNode = createnode(target_val, target_key);
+    node *prev = NULL;
+
+    while (point != NULL) {
+        if (point->val == target_val) {
+            return;
+        }
+        prev = point;
+        point = point->next;
     }
-    if ((*root)->val < target) {
-        del(&(*root)->right, target);
+
+    if (prev == NULL) {
+        prev = newNode;
     }
     else {
-        node *temp = *root;
-        if ((*root)->left == NULL && (*root)->right == NULL) {
-            free(temp);
-            return;
-        }
-        else if ((*root)->left == NULL) {
-            *root = (*root)->right;
-            free(temp);
-            return;
-        }
-        else if ((*root)->right == NULL) {
-            *root = (*root)->left;
-            free(temp);
-            return;
-        }
-        else {
-            temp = (*root)->right;
-            while (temp->left != NULL) {
-                temp = temp->left;
-            }
-            (*root)->val = temp->val;
-            del(&(*root)->right, temp->val);
-        }
+        prev = point->next;
     }
-    
 }
 
-int search(node **root, int target, int total) {
-    if (*root == NULL) return -1;
-    else if ((*root)->val == target) {
-        return total + 1;
+int search(hashtable *ht, int target) {
+    unsigned int target_key = hash(target);
+    node *point = ht->table[target_key];
+
+    if (point == NULL) {
+        return NULL;
     }
-    else if ((*root)->val > target) {
-        search(&(*root)->left, target, total);
+
+    while (point != NULL) {
+        if (point == target) {
+            return point->key;
+        }
+        point = point->next;
     }
-    else if ((*root)->val < target) {
-        search(&(*root)->right, target, total);
-    }
+    return -1;
 }
 
 int main() {
+    hashtable *ht = initialize();
+
     int x; scanf("%d", &x);
     for (int i = 0; i < x; i++) {
-        int target; scanf("%d", &target);
-        insert(&root, target);
+        int target_val; scanf("%d", &target_val);
+        insert(target_val);
     }
-
-    printf("How much do you want to delete?");
-    scanf("%d", &x);
-    printf("Enter their values: \n");
-    for (int i = 0; i < x; i++) {
-        int target; scanf("%d", &target);
-        del(&root, target);
-    }
-
-    printf("Insert the value you wanted to searh: \n");
-    scanf("%d", &x);
-    int total = 0;
-    total = search(&root, x, total);
-    printf("Your value is found in %d tries", total);
-    return 0;
 }
